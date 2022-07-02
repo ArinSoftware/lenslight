@@ -1,0 +1,23 @@
+{
+  "name": "lenslight",
+  "version": "1.0.0",
+  "description": "lenslight photo application",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "keywords": [
+    "photo",
+    "sharing",
+    "portal"
+  ],
+  "author": "Gürcan Çekiç",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  }
+}
