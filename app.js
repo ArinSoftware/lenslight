@@ -16,6 +16,7 @@ const port = process.env.PORT;
 app.set('view engine', 'ejs');
 
 //middlewares
+app.use(express.json());
 app.use(express.static('public'));
 
 //routes

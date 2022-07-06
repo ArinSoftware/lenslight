@@ -15,4 +15,19 @@ const createPhoto = async (req, res) => {
   }
 };
 
-export { createPhoto };
+const getAllPhotos = async (req, res) => {
+  try {
+    const photos = await Photo.find({});
+    res.status(200).render('photos', {
+      photos,
+      link: 'photos',
+    });
+  } catch (error) {
+    res.status(500).json({
+      succeeded: false,
+      error,
+    });
+  }
+};
+
+export { createPhoto, getAllPhotos };
