@@ -1,14 +1,14 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
 const createUser = async (req, res) => {
   try {
-    console.log('REQ.BODY', req.body);
-
     const user = await User.create(req.body);
     res.status(201).json({
       succeeded: true,
       user,
+      token: generateAccessToken(user._id),
     });
   } catch (error) {
     res.status(500).json({
@@ -36,7 +36,10 @@ const loginUser = async (req, res) => {
     }
 
     if (same) {
-      res.status(200).send('YOU ARE LOGGED IN');
+      res.status(200).json({
+        user,
+        token: generateAccessToken(user._id),
+      });
     } else {
       res.status(401).json({
         succeeded: false,
@@ -49,6 +52,12 @@ const loginUser = async (req, res) => {
       error,
     });
   }
+};
+
+const generateAccessToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: '7d',
+  });
 };
 
 export { createUser, loginUser };
