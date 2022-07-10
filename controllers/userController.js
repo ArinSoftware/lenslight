@@ -5,11 +5,19 @@ import User from '../models/userModel.js';
 const createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
-    res.status(201).json({
+
+    const token = generateAccessToken(user._id);
+    console.log('TOKEN register', token);
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24,
+    });
+
+    /*     res.status(201).json({
       succeeded: true,
       user,
-      token: generateAccessToken(user._id),
-    });
+    }); */
+    res.redirect('/login');
   } catch (error) {
     res.status(500).json({
       succeeded: false,
@@ -36,10 +44,17 @@ const loginUser = async (req, res) => {
     }
 
     if (same) {
-      res.status(200).json({
-        user,
-        token: generateAccessToken(user._id),
+      const token = generateAccessToken(user._id);
+      console.log('TOKEN login', token);
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24,
       });
+      res.redirect('/users/dashboard');
+      /*       res.status(200).json({
+        user,
+        
+      }); */
     } else {
       res.status(401).json({
         succeeded: false,
@@ -56,8 +71,15 @@ const loginUser = async (req, res) => {
 
 const generateAccessToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: '7d',
+    expiresIn: '1d',
   });
 };
 
-export { createUser, loginUser };
+const getDashboardPage = (req, res) => {
+  console.log('REQ USER', req.user);
+  res.render('dashboard', {
+    link: 'dashboard',
+  });
+};
+
+export { createUser, loginUser, getDashboardPage };
