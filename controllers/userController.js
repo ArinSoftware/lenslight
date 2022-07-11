@@ -2,35 +2,46 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
+const checkErrors = (error) => {
+  let errors = {};
+
+  if (error.code === 11000) {
+    errors.email = 'The email is already registered';
+    return errors;
+  }
+
+  if (error.name === 'ValidationError') {
+    Object.keys(error.errors).forEach((key) => {
+      errors[key] = error.errors[key].message;
+    });
+
+    return errors;
+  }
+};
+
 const createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
 
     const token = generateAccessToken(user._id);
-    console.log('TOKEN register', token);
+
     res.cookie('jwt', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    /*     res.status(201).json({
-      succeeded: true,
-      user,
-    }); */
-    res.redirect('/login');
+    res.status(201).json({ user: user._id });
   } catch (error) {
-    res.status(500).json({
-      succeeded: false,
-      error,
-    });
+    const errors = checkErrors(error);
+    res.status(400).json(errors);
   }
 };
 
 const loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
 
     let same = false;
 

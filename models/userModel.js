@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import pkg from 'validator';
+const { isEmail, isAlphanumeric } = pkg;
 
 const { Schema } = mongoose;
 
@@ -7,17 +9,20 @@ const userSchema = new Schema(
   {
     username: {
       type: String,
-      required: true,
-      unique: true,
+      required: [true, 'Username is required'],
+      lowercase: true,
+      validate: [isAlphanumeric, 'Only alphanumeric characters'],
     },
     email: {
       type: String,
-      required: true,
+      required: [true, 'Email is required'],
       unique: true,
+      validate: [isEmail, 'Valid email is required'],
     },
     password: {
       type: String,
-      required: true,
+      required: [true, 'Password is required'],
+      minLength: [4, 'At least 4 characters'],
     },
   },
   { timestamps: true }
