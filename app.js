@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(express.static('public'));
 
 //routes
-app.get('*', checkUser);
+app.use('*', checkUser);
 app.use('/', pageRoute);
 app.use('/photos', photoRoute);
 app.use('/users', userRoute);

@@ -1,12 +1,16 @@
+import jwt from 'jsonwebtoken';
 import Photo from '../models/photoModel.js';
 
 const createPhoto = async (req, res) => {
+  console.log('REQ CURRENT USER', req.currentUser);
   try {
-    const photo = await Photo.create(req.body);
-    res.status(201).json({
-      succeeded: true,
-      photo,
+    await Photo.create({
+      name: req.body.name,
+      description: req.body.description,
+      user: req.currentUser._id,
     });
+
+    res.status(201).redirect('/users/dashboard');
   } catch (error) {
     res.status(500).json({
       succeeded: false,
@@ -17,7 +21,7 @@ const createPhoto = async (req, res) => {
 
 const getAllPhotos = async (req, res) => {
   try {
-    const photos = await Photo.find({});
+    const photos = await Photo.find({}).sort('-uploadedAt');
     res.status(200).render('photos', {
       photos,
       link: 'photos',

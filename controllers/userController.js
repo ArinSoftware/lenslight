@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
+import Photo from '../models/photoModel.js';
 
 const checkErrors = (error) => {
   let errors = {};
@@ -86,10 +87,11 @@ const generateAccessToken = (userId) => {
   });
 };
 
-const getDashboardPage = (req, res) => {
-  console.log('REQ USER', req.user);
+const getDashboardPage = async (req, res) => {
+  const photos = await Photo.find({ user: req.currentUser._id });
   res.render('dashboard', {
     link: 'dashboard',
+    photos,
   });
 };
 
