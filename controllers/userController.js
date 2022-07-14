@@ -57,16 +57,11 @@ const loginUser = async (req, res) => {
 
     if (same) {
       const token = generateAccessToken(user._id);
-      console.log('TOKEN login', token);
       res.cookie('jwt', token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24,
       });
       res.redirect('/users/dashboard');
-      /*       res.status(200).json({
-        user,
-        
-      }); */
     } else {
       res.status(401).json({
         succeeded: false,
@@ -95,4 +90,36 @@ const getDashboardPage = async (req, res) => {
   });
 };
 
-export { createUser, loginUser, getDashboardPage };
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.currentUser._id } });
+    res.status(200).render('users', {
+      users,
+      link: 'users',
+    });
+  } catch (error) {
+    res.status(500).json({
+      succeeded: false,
+      error,
+    });
+  }
+};
+
+const getAUser = async (req, res) => {
+  try {
+    const user = await User.findById({ _id: req.params.id });
+    const photos = await Photo.find({ user: user._id });
+    res.status(200).render('user', {
+      user,
+      photos,
+      link: 'users',
+    });
+  } catch (error) {
+    res.status(500).json({
+      succeeded: false,
+      error,
+    });
+  }
+};
+
+export { createUser, loginUser, getDashboardPage, getAllUsers, getAUser };

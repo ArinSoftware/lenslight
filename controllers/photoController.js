@@ -32,7 +32,9 @@ const createPhoto = async (req, res) => {
 
 const getAllPhotos = async (req, res) => {
   try {
-    const photos = await Photo.find({}).sort('-uploadedAt');
+    const photos = await Photo.find({
+      user: { $ne: req.currentUser._id },
+    }).sort('-uploadedAt');
     res.status(200).render('photos', {
       photos,
       link: 'photos',
