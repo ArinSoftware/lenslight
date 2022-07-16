@@ -84,9 +84,15 @@ const generateAccessToken = (userId) => {
 
 const getDashboardPage = async (req, res) => {
   const photos = await Photo.find({ user: req.currentUser._id });
+  const user = await User.findById({ _id: req.currentUser._id }).populate([
+    'following',
+    'followers',
+  ]);
+
   res.render('dashboard', {
     link: 'dashboard',
     photos,
+    user,
   });
 };
 
@@ -122,4 +128,82 @@ const getAUser = async (req, res) => {
   }
 };
 
-export { createUser, loginUser, getDashboardPage, getAllUsers, getAUser };
+const follow = async (req, res) => {
+  const my_id = '62d194755b4f36c1b3805c6b';
+  try {
+    let user = await User.findByIdAndUpdate(
+      { _id: req.params.id },
+      {
+        $push: { followers: my_id },
+      },
+      {
+        new: true,
+      }
+    );
+
+    user = await User.findByIdAndUpdate(
+      { _id: my_id },
+      {
+        $push: { following: req.params.id },
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).json({
+      succeeded: true,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      succeeded: false,
+      error,
+    });
+  }
+};
+
+const unfollow = async (req, res) => {
+  const my_id = '62d194755b4f36c1b3805c6b';
+  try {
+    let user = await User.findByIdAndUpdate(
+      { _id: req.params.id },
+      {
+        $pull: { followers: my_id },
+      },
+      {
+        new: true,
+      }
+    );
+
+    user = await User.findByIdAndUpdate(
+      { _id: my_id },
+      {
+        $pull: { following: req.params.id },
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).json({
+      succeeded: true,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      succeeded: false,
+      error,
+    });
+  }
+};
+
+export {
+  createUser,
+  loginUser,
+  getDashboardPage,
+  getAllUsers,
+  getAUser,
+  follow,
+  unfollow,
+};

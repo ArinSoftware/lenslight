@@ -24,6 +24,18 @@ const userSchema = new Schema(
       required: [true, 'Password is required'],
       minLength: [4, 'At least 4 characters'],
     },
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   { timestamps: true }
 );

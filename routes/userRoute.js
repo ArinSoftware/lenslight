@@ -11,5 +11,7 @@ router
 router.route('/:id').get(userController.getAUser);
 router.route('/register').post(userController.createUser);
 router.route('/login').post(userController.loginUser);
+router.route('/:id/follow').put(userController.follow);
+router.route('/:id/unfollow').put(userController.unfollow);
 
 export default router;
