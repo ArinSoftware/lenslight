@@ -17,17 +17,37 @@
             <div class="container">
                <div class="row">
                   <div class="col-md-6">
-                     <div class="titlepage text_align_left">
-                        <h3 style="font-size: 24px !important;">
-                           <%= photo.name %>
-                        </h3>
-                        <p>
-                           <%= photo.description %>
-                        </p>
-                        <a class="read_more" href="/users/<%= photo.user._id %>">
-                           Artist: <%= photo.user.username %>
-                        </a>
+
+                     <div class="row">
+                        <div class="titlepage text_align_left">
+                           <h3 style="font-size: 24px !important;">
+                              <%= photo.name %>
+                           </h3>
+                           <p>
+                              <%= photo.description %>
+                           </p>
+                           <a class="read_more" href="/users/<%= photo.user._id %>">
+                              Artist: <%= photo.user.username %>
+                           </a>
+                        </div>
                      </div>
+
+                     <div class="row mt-5">
+                        <div class="col-md-6">
+                           <a style="background-color:#ff4444; width: 80%; height: 50px; line-height: 50px; "
+                              class="read_more" href="/users/<%= photo.user._id %>">
+                              Update
+                           </a>
+                        </div>
+                        <div class="col-md-6">
+                           <a onclick="return confirm('Are you sure to delete the photo?')"
+                              style="background-color:#ffbb33; width: 80%; height: 50px; line-height: 50px; "
+                              class="read_more" href="/photos/<%= photo._id %>?_method=DELETE">
+                              Delete
+                           </a>
+                        </div>
+                     </div>
+
                   </div>
                   <div class="col-md-6">
                      <div class="about_img">

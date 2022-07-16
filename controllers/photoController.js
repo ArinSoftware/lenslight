@@ -62,4 +62,19 @@ const getAPhoto = async (req, res) => {
   }
 };
 
-export { createPhoto, getAllPhotos, getAPhoto };
+const deletePhoto = async (req, res) => {
+  try {
+    //await Photo.findById({ _id: req.params.id }).populate('user');
+
+    await Photo.findByIdAndRemove({ _id: req.params.id });
+
+    res.redirect('/users/dashboard');
+  } catch (error) {
+    res.status(500).json({
+      succeeded: false,
+      error,
+    });
+  }
+};
+
+export { createPhoto, getAllPhotos, getAPhoto, deletePhoto };
